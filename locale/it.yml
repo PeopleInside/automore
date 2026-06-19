@@ -1,0 +1,6 @@
+peopleinside-automore:
+  forum:
+    settings:
+      heading: AutoMore
+      enable_label: Attiva il caricamento automatico "Carica altri"
+      enable_help: Carica automaticamente altre discussioni quando scorri vicino alla fine della lista.
