@@ -1,0 +1,6 @@
+peopleinside-automore:
+  forum:
+    settings:
+      heading: AutoMore
+      enable_label: Enable automatic "Load More"
+      enable_help: Automatically loads more discussions when scrolling near the bottom of the list.
