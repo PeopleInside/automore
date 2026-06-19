@@ -1,6 +1,4 @@
-import app from 'flarum/forum/app';
-
-app.initializers.add('peopleinside/automore', () => {
+app.initializers.add('peopleinside/automore', (app) => {
   // Check if IntersectionObserver is supported (modern standard)
   if (typeof IntersectionObserver === 'undefined') {
     return;
@@ -15,15 +13,15 @@ app.initializers.add('peopleinside/automore', () => {
         // Find the button (could be the target or inside the target)
         const target = entry.target;
         const button = target.tagName === 'BUTTON' ? target : target.querySelector('button');
-
+        
         if (button && !button.disabled && !button.classList.contains('disabled')) {
           // Security / stability rule: enforce a click cooldown to prevent infinite click cycles
           // in case of slow connections or server-side issues.
           const now = Date.now();
-          const lastClick = button.getAttribute('data-last-auto-click') 
-            ? parseInt(button.getAttribute('data-last-auto-click'), 10) 
+          const lastClick = button.getAttribute('data-last-auto-click')
+            ? parseInt(button.getAttribute('data-last-auto-click'), 10)
             : 0;
-
+          
           if (now - lastClick > 1000) {
             button.setAttribute('data-last-auto-click', now.toString());
             button.click();
@@ -41,7 +39,7 @@ app.initializers.add('peopleinside/automore', () => {
 
   // Scans the DOM for Flarum's load-more containers or buttons
   const findAndObserveButtons = () => {
-    // Select Flarum 1.x & 2.0 list load-more wrapping classes, e.g. .DiscussionList-loadMore, 
+    // Select Flarum 1.x & 2.0 list load-more wrapping classes, e.g. .DiscussionList-loadMore,
     // or generic containers ending in "loadMore", plus direct button elements.
     const selectors = [
       '.DiscussionList-loadMore',
@@ -79,4 +77,3 @@ app.initializers.add('peopleinside/automore', () => {
     subtree: true,
   });
 });
-
