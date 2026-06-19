@@ -1,52 +1,89 @@
 app.initializers.add('peopleinside/automore', (app) => {
-  // Check if IntersectionObserver is supported (modern standard)
+  // Check if IntersectionObserver is supported
   if (typeof IntersectionObserver === 'undefined') {
+    console.debug('[automore] IntersectionObserver not supported, extension disabled');
     return;
   }
 
-  // Set up the IntersectionObserver with a generous 150px rootMargin
-  // to pre-trigger loading before the button is fully visible,
-  // creating a seamless, premium infinite scroll experience.
+  // Configuration
+  const CONFIG = {
+    maxAutoLoads: 10,        // Maximum number of automatic loads before stopping
+    clickCooldown: 1000,     // Milliseconds between auto-clicks
+    rootMargin: '150px',     // Trigger distance from viewport
+    debug: false,            // Set to true for verbose logging
+  };
+
+  // State tracking
+  let autoLoadCount = 0;
+  let userHasManuallyStopped = false;
+
+  const log = (...args) => {
+    if (CONFIG.debug) {
+      console.debug('[automore]', ...args);
+    }
+  };
+
+  // Check if user has disabled auto-load via localStorage
+  const isAutoLoadEnabled = () => {
+    const stored = localStorage.getItem('automore-enabled');
+    return stored !== 'false'; // Default to true if not set
+  };
+
+  const setAutoLoadEnabled = (enabled) => {
+    localStorage.setItem('automore-enabled', enabled.toString());
+    userHasManuallyStopped = !enabled;
+    log('Auto-load', enabled ? 'enabled' : 'disabled', 'by user');
+  };
+
+  // Set up the IntersectionObserver
   const observer = new IntersectionObserver((entries) => {
+    // Don't auto-load if disabled or limit reached
+    if (!isAutoLoadEnabled() || userHasManuallyStopped) {
+      log('Auto-load skipped (disabled or stopped)');
+      return;
+    }
+
+    if (autoLoadCount >= CONFIG.maxAutoLoads) {
+      log('Max auto-loads reached:', autoLoadCount);
+      return;
+    }
+
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        // Find the button (could be the target or inside the target)
         const target = entry.target;
         const button = target.tagName === 'BUTTON' ? target : target.querySelector('button');
         
         if (button && !button.disabled && !button.classList.contains('disabled')) {
-          // Security / stability rule: enforce a click cooldown to prevent infinite click cycles
-          // in case of slow connections or server-side issues.
           const now = Date.now();
           const lastClick = button.getAttribute('data-last-auto-click')
             ? parseInt(button.getAttribute('data-last-auto-click'), 10)
             : 0;
           
-          if (now - lastClick > 1000) {
+          if (now - lastClick > CONFIG.clickCooldown) {
             button.setAttribute('data-last-auto-click', now.toString());
+            autoLoadCount++;
+            log('Auto-click triggered, count:', autoLoadCount);
             button.click();
           }
         }
       }
     });
   }, {
-    root: null, // use the browser viewport
-    rootMargin: '150px', // start clicking the button when it's within 150px of the viewport
-    threshold: 0 // trigger as soon as any part of it enters the margin
+    root: null,
+    rootMargin: CONFIG.rootMargin,
+    threshold: 0
   });
 
   const observedElements = new Set();
 
-  // Scans the DOM for Flarum's load-more containers or buttons
+  // Find and observe load-more buttons
   const findAndObserveButtons = () => {
-    // Select Flarum 1.x & 2.0 list load-more wrapping classes, e.g. .DiscussionList-loadMore,
-    // or generic containers ending in "loadMore", plus direct button elements.
+    // More specific selectors for Flarum 1.x and 2.0
     const selectors = [
       '.DiscussionList-loadMore',
-      '[class$="loadMore"]',
-      '[class*="-loadMore"]',
       '.DiscussionList-loadMore button',
-      '[class$="loadMore"] button'
+      '.PostStream-loadMore',
+      '.PostStream-loadMore button'
     ];
 
     selectors.forEach((selector) => {
@@ -56,24 +93,67 @@ app.initializers.add('peopleinside/automore', (app) => {
           if (!observedElements.has(element)) {
             observedElements.add(element);
             observer.observe(element);
+            log('Observing element:', element);
           }
         });
       } catch (e) {
-        // Prevent selector parsing issues from halting execution
+        console.debug('[automore] Selector error:', selector, e);
       }
     });
   };
 
-  // Perform an initial scan
+  // Initial scan
   findAndObserveButtons();
 
-  // Watch for DOM mutations to seamlessly track newly rendered posts or lists
-  const mutationObserver = new MutationObserver(() => {
-    findAndObserveButtons();
+  // Optimized MutationObserver: only watch discussion list containers
+  const mutationObserver = new MutationObserver((mutations) => {
+    let shouldRescan = false;
+    
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1) { // Element node
+            // Check if added node is or contains a load-more button
+            if (node.matches && (
+              node.matches('.DiscussionList-loadMore') ||
+              node.matches('.PostStream-loadMore') ||
+              node.querySelector('.DiscussionList-loadMore, .PostStream-loadMore')
+            )) {
+              shouldRescan = true;
+            }
+          }
+        });
+      }
+    });
+
+    if (shouldRescan) {
+      log('DOM mutation detected, rescanning');
+      findAndObserveButtons();
+    }
   });
 
-  mutationObserver.observe(document.body, {
+  // Observe only the main content area, not the entire body
+  const observeTarget = document.querySelector('.IndexPage, .DiscussionPage, #content') || document.body;
+  
+  mutationObserver.observe(observeTarget, {
     childList: true,
     subtree: true,
   });
+
+  log('Extension initialized with config:', CONFIG);
+
+  // Expose API for user control (optional, for advanced users)
+  window.automore = {
+    enable: () => setAutoLoadEnabled(true),
+    disable: () => setAutoLoadEnabled(false),
+    status: () => ({
+      enabled: isAutoLoadEnabled(),
+      autoLoadCount,
+      maxAutoLoads: CONFIG.maxAutoLoads,
+    }),
+    reset: () => {
+      autoLoadCount = 0;
+      log('Auto-load count reset');
+    }
+  };
 });
