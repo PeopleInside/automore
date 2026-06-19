@@ -1,40 +1,46 @@
 {
-  "name": "katosdev/automore",
+  "name": "peopleinside/automore",
   "description": "Automatically clicks the 'load more' button when it comes into view.",
   "keywords": [
     "flarum",
     "automatic",
     "load",
-    "more"
+    "more",
+    "scroll",
+    "infinite"
   ],
   "type": "flarum-extension",
   "license": "MIT",
   "support": {
-    "source": "https://github.com/katosdev/automore",
-    "issues": "https://github.com/katosdev/automore/issues",
+    "source": "https://github.com/PeopleInside/automore",
+    "issues": "https://github.com/PeopleInside/automore/issues",
     "forum": "https://discuss.flarum.org"
-},
-"funding": [
-  {
-      "type": "website",
-      "url": "https://www.buymeacoffee.com/katos"
-  }
-],
+  },
   "require": {
-    "flarum/core": "^1.2.0"
+    "php": "^8.2",
+    "flarum/core": "^2.0.0-beta.1 || ^2.0.0"
   },
   "authors": [
     {
+      "name": "PeopleInside",
+      "role": "Developer"
+    },
+    {
       "name": "Katos",
       "email": "katos@flarum.org",
-      "role": "Developer"
+      "role": "Original Developer"
     },
     {
       "name": "NorioDS",
       "email": "flarum@guitartalk.co.za",
-      "role": "Developer"
+      "role": "Original Developer"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "PeopleInside\\AutoMore\\": "src/"
+    }
+  },
   "extra": {
     "flarum-extension": {
       "title": "Auto More",
@@ -48,9 +54,9 @@
   },
   "flarum-cli": {
     "modules": {
-        "githubActions": true,
-        "backendTesting": true
+      "githubActions": true,
+      "backendTesting": true
     }
-}
+  }
 }
 
