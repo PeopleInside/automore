@@ -13,8 +13,7 @@
   "license": "MIT",
   "support": {
     "source": "https://github.com/PeopleInside/automore",
-    "issues": "https://github.com/PeopleInside/automore/issues",
-    "forum": "https://discuss.flarum.org"
+    "issues": "https://github.com/PeopleInside/automore/issues"
   },
   "require": {
     "php": "^8.2",
