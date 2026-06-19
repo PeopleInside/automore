@@ -1,67 +1,62 @@
 {
-  "name": "peopleinside/automore",
-  "description": "Automatically clicks the 'load more' button when it comes into view.",
-  "keywords": [
-    "flarum",
-    "automatic",
-    "load",
-    "more",
-    "scroll",
-    "infinite"
-  ],
-  "type": "flarum-extension",
-  "license": "MIT",
-  "support": {
-    "source": "https://github.com/PeopleInside/automore",
-    "issues": "https://github.com/PeopleInside/automore/issues"
-  },
-  "require": {
-    "php": "^8.2",
-    "flarum/core": "^2.0.0-beta.1 || ^2.0.0"
-  },
-"authors": [
-  {
-    "name": "PeopleInside",
-    "homepage": "https://github.com/PeopleInside",
-    "role": "Developer"
-  },
-  {
-    "name": "Katos",
-    "homepage": "https://github.com/katosdev",
-    "role": "Original Developer"
-  },
-  {
-    "name": "NorioDS",
-    "homepage": "https://github.com/noriods",
-    "role": "Original Developer"
-  },
-  {
-    "name": "Ralkage",
-    "homepage": "https://github.com/Ralkage",
-    "role": "Contributor"
-  }
-]
-  "autoload": {
-    "psr-4": {
-      "PeopleInside\\AutoMore\\": "src/"
-    }
-  },
-  "extra": {
-    "flarum-extension": {
-      "title": "Auto More",
-      "category": "feature",
-      "icon": {
-        "name": "fas fa-angle-double-down",
-        "backgroundColor": "#94dcff",
-        "color": "#fff"
-      }
-    }
-  },
-  "flarum-cli": {
-    "modules": {
-      "githubActions": true,
-      "backendTesting": true
-    }
-  }
+    "name": "peopleinside/automore",
+    "description": "Automatically clicks the 'load more' button when it comes into view.",
+    "keywords": [
+        "flarum"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^2.0.0-beta.1 || ^2.0.0"
+    },
+    "authors": [
+        {
+            "name": "PeopleInside",
+            "homepage": "https://github.com/PeopleInside",
+            "role": "Developer"
+        },
+        {
+            "name": "Katos",
+            "homepage": "https://github.com/katosdev",
+            "role": "Original Developer"
+        },
+        {
+            "name": "NorioDS",
+            "homepage": "https://github.com/noriods",
+            "role": "Original Developer"
+        },
+        {
+            "name": "Ralkage",
+            "homepage": "https://github.com/Ralkage",
+            "role": "Contributor"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/PeopleInside/automore",
+        "issues": "https://github.com/PeopleInside/automore/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "PeopleInside\\AutoMore\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Auto More",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-arrow-down",
+                "backgroundColor": "#4a90e2",
+                "color": "#fff"
+            }
+        },
+        "flarum-cli": {
+            "modules": {
+                "githubActions": true,
+                "backendTesting": true
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
-
