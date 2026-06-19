@@ -1,47 +1,33 @@
 import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
-import SettingsModal from 'flarum/forum/components/SettingsModal';
+import SettingsPage from 'flarum/forum/components/SettingsPage';
 import Switch from 'flarum/common/components/Switch';
 
 export default function addAutoMoreSettings() {
-  extend(SettingsModal.prototype, 'oninit', function () {
-    // Assicura che la preferenza abbia un valore di default
-    if (app.session.user && app.session.user.preferences().automore_enabled === undefined) {
-      app.session.user.pushData({
-        attributes: {
-          preferences: {
-            ...app.session.user.preferences(),
-            automore_enabled: true,
-          },
-        },
-      });
-    }
-  });
-
-  extend(SettingsModal.prototype, 'settingsItems', function (items) {
+  // Estendi la sezione "privacy" delle impostazioni utente
+  extend(SettingsPage.prototype, 'privacyItems', function (items) {
     if (!app.session.user) return;
 
+    // Aggiungi il toggle per AutoMore
     items.add(
       'automore',
-      <div className="Form-group">
-        <h3>{app.translator.trans('peopleinside-automore.forum.settings.heading')}</h3>
-        <div>
-          {Switch.component(
-            {
-              state: app.session.user.preferences().automore_enabled !== false,
-              onchange: (value) => {
-                // Salva la preferenza tramite l'API standard di Flarum
-                app.session.user.savePreferences({ automore_enabled: value });
-              },
-            },
-            app.translator.trans('peopleinside-automore.forum.settings.enable_label')
-          )}
-          <p className="helpText">
-            {app.translator.trans('peopleinside-automore.forum.settings.enable_help')}
-          </p>
-        </div>
-      </div>,
-      10 // priorità bassa, appare in fondo
+      <Switch
+        state={this.user.preferences()?.automore_enabled !== false}
+        onchange={(value) => {
+          this.automoreLoading = true;
+          this.user.savePreferences({ automore_enabled: value }).then(() => {
+            this.automoreLoading = false;
+            m.redraw();
+          });
+        }}
+        loading={this.automoreLoading}
+      >
+        {app.translator.trans('peopleinside-automore.forum.settings.enable_label')}
+        <span className="helpText">
+          {app.translator.trans('peopleinside-automore.forum.settings.enable_help')}
+        </span>
+      </Switch>,
+      50 // Priorità: appare dopo le impostazioni di privacy native
     );
   });
 }
