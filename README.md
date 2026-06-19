@@ -29,7 +29,7 @@ php flarum cache:clear
 ### Links
 
 - [GitHub Repository](https://github.com/PeopleInside/automore)
-- [Flarum Discuss](https://discuss.flarum.org)
+- - [Report Issues](https://github.com/PeopleInside/automore/issues)
 
 ### Credits
 - **PeopleInside** for the Flarum 2.0 update and modernization (jQuery removal, performance optimization with IntersectionObserver, safety throttle limits).
