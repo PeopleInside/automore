@@ -1,12 +1,12 @@
+import app from 'flarum/forum/app';
 import addAutoMoreSettings from './addAutoMoreSettings';
 
-app.initializers.add('peopleinside/automore', (app) => {
+app.initializers.add('peopleinside/automore', () => {
   // Registra il toggle nelle impostazioni utente
   addAutoMoreSettings();
 
-  // Disabilita silenziosamente se IntersectionObserver non è supportato
+  // Check if IntersectionObserver is supported (modern standard)
   if (typeof IntersectionObserver === 'undefined') {
-    console.debug('[automore] IntersectionObserver not supported, extension disabled');
     return;
   }
 
@@ -26,15 +26,13 @@ app.initializers.add('peopleinside/automore', (app) => {
 
   // Verifica se l'utente ha abilitato l'auto-load
   const isAutoLoadEnabled = () => {
-    // Utenti loggati: preferenza salvata nel profilo
     if (app.session && app.session.user) {
       return app.session.user.preferences().automore_enabled !== false;
     }
-    // Ospiti: fallback su localStorage
     return localStorage.getItem('automore-enabled') !== 'false';
   };
 
-  // IntersectionObserver per il caricamento automatico
+  // Set up the IntersectionObserver
   const observer = new IntersectionObserver((entries) => {
     if (!isAutoLoadEnabled()) {
       log('Auto-load disabled by user');
@@ -49,9 +47,7 @@ app.initializers.add('peopleinside/automore', (app) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const target = entry.target;
-        const button = target.tagName === 'BUTTON'
-          ? target
-          : target.querySelector('button');
+        const button = target.tagName === 'BUTTON' ? target : target.querySelector('button');
 
         if (button && !button.disabled && !button.classList.contains('disabled')) {
           const now = Date.now();
@@ -71,7 +67,7 @@ app.initializers.add('peopleinside/automore', (app) => {
   }, {
     root: null,
     rootMargin: CONFIG.rootMargin,
-    threshold: 0,
+    threshold: 0
   });
 
   const observedElements = new Set();
@@ -81,12 +77,13 @@ app.initializers.add('peopleinside/automore', (app) => {
       '.DiscussionList-loadMore',
       '.DiscussionList-loadMore button',
       '.PostStream-loadMore',
-      '.PostStream-loadMore button',
+      '.PostStream-loadMore button'
     ];
 
     selectors.forEach((selector) => {
       try {
-        document.querySelectorAll(selector).forEach((element) => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((element) => {
           if (!observedElements.has(element)) {
             observedElements.add(element);
             observer.observe(element);
@@ -101,33 +98,18 @@ app.initializers.add('peopleinside/automore', (app) => {
 
   findAndObserveButtons();
 
-  // MutationObserver ottimizzato: osserva solo il contenuto principale
-  const mutationObserver = new MutationObserver((mutations) => {
-    let shouldRescan = false;
-
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === 1 && node.matches && (
-          node.matches('.DiscussionList-loadMore, .PostStream-loadMore') ||
-          (node.querySelector && node.querySelector('.DiscussionList-loadMore, .PostStream-loadMore'))
-        )) {
-          shouldRescan = true;
-        }
-      });
-    });
-
-    if (shouldRescan) {
-      log('DOM mutation, rescanning');
-      findAndObserveButtons();
-    }
+  const mutationObserver = new MutationObserver(() => {
+    findAndObserveButtons();
   });
 
-  const observeTarget = document.querySelector('.IndexPage, .DiscussionPage, #content') || document.body;
-  mutationObserver.observe(observeTarget, { childList: true, subtree: true });
+  mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 
   log('Initialized', CONFIG);
 
-  // API pubblica per debug/testing
+  // API pubblica per debug
   window.automore = {
     status: () => ({
       enabled: isAutoLoadEnabled(),
