@@ -6,9 +6,8 @@ import Switch from 'flarum/common/components/Switch';
 export default function addAutoMoreSettings() {
   // Estendi la sezione "privacy" delle impostazioni utente
   extend(SettingsPage.prototype, 'privacyItems', function (items) {
-    if (!app.session.user) return;
+    if (!this.user) return;
 
-    // Aggiungi il toggle per AutoMore
     items.add(
       'automore',
       <Switch
@@ -27,7 +26,7 @@ export default function addAutoMoreSettings() {
           {app.translator.trans('peopleinside-automore.forum.settings.enable_help')}
         </span>
       </Switch>,
-      50 // Priorità: appare dopo le impostazioni di privacy native
+      50 // Priorità: appare dopo "discloseOnline" (che ha priorità 100)
     );
   });
 }
