@@ -19,22 +19,28 @@
     "php": "^8.2",
     "flarum/core": "^2.0.0-beta.1 || ^2.0.0"
   },
-  "authors": [
-    {
-      "name": "PeopleInside",
-      "role": "Developer"
-    },
-    {
-      "name": "Katos",
-      "email": "katos@flarum.org",
-      "role": "Original Developer"
-    },
-    {
-      "name": "NorioDS",
-      "email": "flarum@guitartalk.co.za",
-      "role": "Original Developer"
-    }
-  ],
+"authors": [
+  {
+    "name": "PeopleInside",
+    "homepage": "https://github.com/PeopleInside",
+    "role": "Developer"
+  },
+  {
+    "name": "Katos",
+    "homepage": "https://github.com/katosdev",
+    "role": "Original Developer"
+  },
+  {
+    "name": "NorioDS",
+    "homepage": "https://github.com/noriods",
+    "role": "Original Developer"
+  },
+  {
+    "name": "Ralkage",
+    "homepage": "https://github.com/Ralkage",
+    "role": "Contributor"
+  }
+]
   "autoload": {
     "psr-4": {
       "PeopleInside\\AutoMore\\": "src/"
