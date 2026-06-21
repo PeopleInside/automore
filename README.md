@@ -16,7 +16,7 @@ This software is provided **"AS IS"**, without any warranty. While it has been t
 AutoMore is enabled by default for all users. **Logged-in users** can disable it at any time:
 
 1. Go to **Settings** (from the user menu).
-2. Open the **Privacy** section.
+2. Srach the **Automore** section.
 3. Toggle **"Automatically load more content"** off.
 
 The preference is saved to the user's account and persists across sessions and devices.
