@@ -1,7 +1,7 @@
 import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
 import Switch from 'flarum/common/components/Switch';
-import m from 'mithril'; // IMPORTANTE: Necessario per il redraw esplicito
+// RIMOSSO: import m from 'mithril'; (Non serve, 'm' è globale in Flarum)
 
 export default function addAutoMoreSettings() {
   const possiblePaths = [
@@ -32,7 +32,7 @@ export default function addAutoMoreSettings() {
                     this.automoreLoading = true;
                     this.user.savePreferences({ automore_enabled: value }).then(() => {
                       this.automoreLoading = false;
-                      m.redraw();
+                      m.redraw(); // 'm' è disponibile globalmente
                     }).catch(() => {
                       this.automoreLoading = false;
                       m.redraw();
