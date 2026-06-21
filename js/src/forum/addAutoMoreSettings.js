@@ -1,10 +1,9 @@
 import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
 import Switch from 'flarum/common/components/Switch';
+// RIMOSSO: import m from 'mithril'; (Non serve, 'm' è globale in Flarum)
 
 export default function addAutoMoreSettings() {
-  // In Flarum 2.0, proviamo diversi path possibili per SettingsPage
-  // Il componente potrebbe essere in 'pages' o 'components'
   const possiblePaths = [
     'flarum/forum/pages/SettingsPage',
     'flarum/forum/components/SettingsPage',
@@ -14,7 +13,7 @@ export default function addAutoMoreSettings() {
 
   possiblePaths.forEach((path) => {
     try {
-      // Usa extend con stringa per lazy-loading (Flarum 2.0)
+      // Flarum 2.0 Lazy Loading Extender
       extend(path, 'privacyItems', function (items) {
         if (!this.user) return;
 
@@ -33,7 +32,7 @@ export default function addAutoMoreSettings() {
                     this.automoreLoading = true;
                     this.user.savePreferences({ automore_enabled: value }).then(() => {
                       this.automoreLoading = false;
-                      m.redraw();
+                      m.redraw(); // 'm' è disponibile globalmente
                     }).catch(() => {
                       this.automoreLoading = false;
                       m.redraw();
@@ -52,11 +51,10 @@ export default function addAutoMoreSettings() {
         );
       });
     } catch (e) {
-      // Silenziosamente ignora i path che non esistono
+      // Ignora i path che non esistono
     }
   });
 
-  // Fallback: prova ad estendere la pagina principale delle impostazioni
   if (!settingsPageFound) {
     try {
       extend('flarum/forum/pages/SettingsPage', 'content', function (content) {
@@ -64,7 +62,6 @@ export default function addAutoMoreSettings() {
         
         console.debug('[automore] Settings toggle added via content fallback');
         
-        // Aggiungi il toggle alla fine del contenuto
         if (Array.isArray(content)) {
           content.push(
             <div className="Settings-automore Form-group">

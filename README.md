@@ -11,6 +11,18 @@ This software is provided **"AS IS"**, without any warranty. While it has been t
 
 **You use this software entirely at your own risk.** The authors and contributors are not liable for any damages, data loss, or unexpected behavior resulting from its use, modification, or distribution. Always review and test the code independently before deploying it in critical or production environments.
 
+## User Preferences
+
+AutoMore is enabled by default for all users. **Logged-in users** can disable it at any time:
+
+1. Go to **Settings** (from the user menu).
+2. Srach the **Automore** section.
+3. Toggle **"Automatically load more content"** off.
+
+The preference is saved to the user's account and persists across sessions and devices.
+
+> **Note:** Guests (non-authenticated users) will always have automatic loading enabled.
+
 ### Installation
 
 Install manually with composer:
