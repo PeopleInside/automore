@@ -19,11 +19,12 @@ app.initializers.add('peopleinside/automore', () => {
   };
 
   const isAutoLoadEnabled = () => {
+    // Solo per utenti autenticati: controlla la preferenza salvata nel database
     if (app.session && app.session.user) {
       return app.session.user.preferences().automore_enabled !== false;
     }
-    // Per gli ospiti, controlla il localStorage (allineato al nome della preferenza)
-    return localStorage.getItem('automore_enabled') !== 'false';
+    // Per gli ospiti: sempre attivo (nessun controllo localStorage)
+    return true;
   };
 
   const observer = new IntersectionObserver((entries) => {
