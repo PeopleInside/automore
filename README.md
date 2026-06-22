@@ -1,6 +1,9 @@
 # Auto More
 
----
+[![Packagist Version](https://img.shields.io/packagist/v/peopleinside/automore)](https://packagist.org/packages/peopleinside/automore)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/peopleinside/automore)](https://packagist.org/packages/peopleinside/automore)
+[![GitHub Issues](https://img.shields.io/github/issues/PeopleInside/automore)](https://github.com/PeopleInside/automore/issues)
+
 A [Flarum](https://flarum.org) extension. Automatically clicks the 'load more' button when it comes into view.
 
 A revitalisation of the much-loved **Auto-more** extension originally by NorioDS, updated for Flarum 2.0.
@@ -41,7 +44,7 @@ php flarum cache:clear
 ### Links
 
 - [GitHub Repository](https://github.com/PeopleInside/automore)
-- - [Report Issues](https://github.com/PeopleInside/automore/issues)
+- [Report Issues](https://github.com/PeopleInside/automore/issues)
 
 ### Credits
 - **PeopleInside** for the Flarum 2.0 update and modernization (jQuery removal, performance optimization with IntersectionObserver, safety throttle limits).
