@@ -1,10 +1,11 @@
 import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
 import Switch from 'flarum/common/components/Switch';
-import SettingsPage from 'flarum/forum/pages/SettingsPage';
 
 export default function addAutoMoreSettings() {
-  // Correzione: passiamo il prototipo della classe importata invece di una stringa
+  // Ottieni SettingsPage dalle rotte dell'applicazione invece di importarlo direttamente
+  const SettingsPage = app.routes.settings.component;
+
   extend(SettingsPage.prototype, 'privacyItems', function (items) {
     if (!this.user) return;
 
@@ -21,7 +22,7 @@ export default function addAutoMoreSettings() {
               this.automoreLoading = true;
               this.user.savePreferences({ automore_enabled: value }).then(() => {
                 this.automoreLoading = false;
-                m.redraw(); // 'm' è disponibile globalmente in Flarum
+                m.redraw();
               }).catch(() => {
                 this.automoreLoading = false;
                 m.redraw();
