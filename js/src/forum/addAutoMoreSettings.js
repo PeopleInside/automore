@@ -3,10 +3,9 @@ import app from 'flarum/forum/app';
 import Switch from 'flarum/common/components/Switch';
 
 export default function addAutoMoreSettings() {
-  // Ottieni SettingsPage dalle rotte dell'applicazione invece di importarlo direttamente
-  const SettingsPage = app.routes.settings.component;
-
-  extend(SettingsPage.prototype, 'privacyItems', function (items) {
+  // In Flarum 2.0, passiamo il percorso del modulo come stringa
+  // per gestire correttamente il lazy loading di SettingsPage
+  extend('flarum/forum/components/SettingsPage', 'privacyItems', function (items) {
     if (!this.user) return;
 
     console.debug('[automore] Settings toggle added');
