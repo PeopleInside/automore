@@ -44,7 +44,7 @@ php flarum cache:clear
 ### Links
 
 - [GitHub Repository](https://github.com/PeopleInside/automore)
-- - [Report Issues](https://github.com/PeopleInside/automore/issues)
+- [Report Issues](https://github.com/PeopleInside/automore/issues)
 
 ### Credits
 - **PeopleInside** for the Flarum 2.0 update and modernization (jQuery removal, performance optimization with IntersectionObserver, safety throttle limits).
