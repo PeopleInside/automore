@@ -27,53 +27,44 @@ app.initializers.add('peopleinside/automore', () => {
     return true;
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    if (!isAutoLoadEnabled()) {
-      log('Auto-load disabled by user');
-      return;
-    }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!isAutoLoadEnabled()) {
+        log('Auto-load disabled by user');
+        return;
+      }
 
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const target = entry.target;
-        const button = target.tagName === 'BUTTON' ? target : target.querySelector('button');
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const button = target.tagName === 'BUTTON' ? target : target.querySelector('button');
 
-        // SICUREZZA: Clicchiamo solo se il pulsante è attivo e Flarum non sta già caricando
-        if (
-          button &&
-          !button.disabled &&
-          !button.classList.contains('disabled') &&
-          !button.classList.contains('is-loading')
-        ) {
-          const now = Date.now();
-          const lastClick = button.getAttribute('data-last-auto-click')
-            ? parseInt(button.getAttribute('data-last-auto-click'), 10)
-            : 0;
+          // SICUREZZA: Clicchiamo solo se il pulsante è attivo e Flarum non sta già caricando
+          if (button && !button.disabled && !button.classList.contains('disabled') && !button.classList.contains('is-loading')) {
+            const now = Date.now();
+            const lastClick = button.getAttribute('data-last-auto-click') ? parseInt(button.getAttribute('data-last-auto-click'), 10) : 0;
 
-          if (now - lastClick > CONFIG.clickCooldown) {
-            button.setAttribute('data-last-auto-click', now.toString());
-            log('Auto-click triggered');
-            button.click();
+            if (now - lastClick > CONFIG.clickCooldown) {
+              button.setAttribute('data-last-auto-click', now.toString());
+              log('Auto-click triggered');
+              button.click();
+            }
           }
         }
-      }
-    });
-  }, {
-    root: null,
-    rootMargin: CONFIG.rootMargin,
-    threshold: 0
-  });
+      });
+    },
+    {
+      root: null,
+      rootMargin: CONFIG.rootMargin,
+      threshold: 0,
+    }
+  );
 
   // BEST PRACTICE: WeakSet per evitare Memory Leaks nel DOM di Flarum
   const observedElements = new WeakSet();
 
   const findAndObserveButtons = () => {
-    const selectors = [
-      '.DiscussionList-loadMore',
-      '.DiscussionList-loadMore button',
-      '.PostStream-loadMore',
-      '.PostStream-loadMore button'
-    ];
+    const selectors = ['.DiscussionList-loadMore', '.DiscussionList-loadMore button', '.PostStream-loadMore', '.PostStream-loadMore button'];
 
     selectors.forEach((selector) => {
       try {

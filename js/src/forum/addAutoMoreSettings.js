@@ -19,13 +19,16 @@ export default function addAutoMoreSettings() {
             state: this.user.preferences()?.automore_enabled !== false,
             onchange: (value) => {
               this.automoreLoading = true;
-              this.user.savePreferences({ automore_enabled: value }).then(() => {
-                this.automoreLoading = false;
-                m.redraw();
-              }).catch(() => {
-                this.automoreLoading = false;
-                m.redraw();
-              });
+              this.user
+                .savePreferences({ automore_enabled: value })
+                .then(() => {
+                  this.automoreLoading = false;
+                  m.redraw();
+                })
+                .catch(() => {
+                  this.automoreLoading = false;
+                  m.redraw();
+                });
             },
             loading: this.automoreLoading,
           },
